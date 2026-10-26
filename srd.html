@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Result Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1769aa;
+        }
+
+        input {
+            padding: 10px;
+            width: 90%;
+            max-width: 350px;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background: #1769aa;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f6fa;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Student Result Dashboard</h1>
+
+    <input type="text" id="search"
+           placeholder="Search by student name or ID"
+           oninput="displayStudents()">
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Total</th>
+                    <th>Average</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody id="studentData"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Array of student objects
+    const students = [
+        { id: 101, name: "Arun", marks: [90, 85, 80] },
+        { id: 102, name: "Priya", marks: [75, 80, 70] },
+        { id: 103, name: "Kumar", marks: [60, 65, 55] },
+        { id: 104, name: "Divya", marks: [95, 92, 98] }
+    ];
+
+    function getGrade(avg) {
+        if (avg >= 90) return "A+";
+        if (avg >= 80) return "A";
+        if (avg >= 70) return "B";
+        if (avg >= 60) return "C";
+        if (avg >= 50) return "D";
+        return "F";
+    }
+
+    function displayStudents() {
+        const search = document.getElementById("search")
+            .value.toLowerCase().trim();
+
+        const tbody = document.getElementById("studentData");
+        tbody.innerHTML = "";
+
+        const filtered = students.filter(student =>
+            student.name.toLowerCase().includes(search) ||
+            String(student.id).includes(search)
+        );
+
+        if (filtered.length === 0) {
+            tbody.innerHTML =
+                '<tr><td colspan="5">No student found</td></tr>';
+            return;
+        }
+
+        filtered.forEach(student => {
+            const total = student.marks.reduce(
+                (sum, mark) => sum + mark, 0
+            );
+
+            const average = total / student.marks.length;
+            const grade = getGrade(average);
+
+            const row = document.createElement("tr");
+
+            [
+                student.id,
+                student.name,
+                total,
+                average.toFixed(2),
+                grade
+            ].forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+            tbody.appendChild(row);
+        });
+    }
+
+    displayStudents();
+</script>
+
+</body>
+</html>
